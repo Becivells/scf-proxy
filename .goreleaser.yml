@@ -3,7 +3,7 @@
 # https://goreleaser.com/customization/build/
 project_name: scf-proxy
 gomod:
-  proxy: true
+  proxy: false
 builds:
   - main: ./cmd/main.go
     id: "scf-proxy"

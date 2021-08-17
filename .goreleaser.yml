@@ -34,7 +34,6 @@ builds:
       - goos: darwin
         goarch: 386
 archives:
-
   -
     allow_different_binary_count: true
     name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"

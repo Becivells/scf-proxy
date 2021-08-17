@@ -13,16 +13,16 @@ CEND:=$(shell tput sgr0 2>/dev/null)
 endif
 .PHONY: build
 build:      	## build snapshot
-	@echo "$(CGREEN)judas build snapshot no publish ...$(CEND)"
+	@echo "$(CGREEN) build snapshot no publish ...$(CEND)"
 	@goreleaser build --snapshot --rm-dist
 
 .PHONY: snapshot
 snapshot:    	## pre snapshot
-	@echo "$(CGREEN)judas release snapshot no publish ...$(CEND)"
+	@echo "$(CGREEN) release snapshot no publish ...$(CEND)"
 	@goreleaser release --skip-publish  --snapshot --rm-dist
 .PHONY: release
 release:		## release no publish
-	@echo "$(CGREEN)judas release no publish ...$(CEND)"
+	@echo "$(CGREEN) release no publish ...$(CEND)"
 	@goreleaser release --skip-publish  --rm-dist
 
 .PHONY: clean
@@ -31,5 +31,5 @@ clean:      	## clean up
 	@rm -rf ./dist
 .PHONY: help
 help:			## Show this help.
-	@echo "$(CGREEN)judas project$(CEND)"
+	@echo "$(CGREEN)project$(CEND)"
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make $(CYELLOW)<target>$(CEND) (default: help)\n\nTargets:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  $(CCYAN)%-12s$(CEND) %s\n", $$1, $$2 }' $(MAKEFILE_LIST)

@@ -116,7 +116,7 @@ func hostIncludingPort(req *http.Request) (host string) {
 }
 
 func respBadGateway(resp http.ResponseWriter, msg string) {
-	log.Println(msg)
+	log.Printf("bad Gateway Msg:%s\n", msg)
 	resp.WriteHeader(502)
 	resp.Write([]byte(msg))
 }

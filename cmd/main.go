@@ -5,16 +5,30 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-
-	"scf-proxy/pkg/scf"
-
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 	"github.com/tencentyun/scf-go-lib/cloudfunction"
 	"github.com/tencentyun/scf-go-lib/events"
+	"os"
+	"scf-proxy/pkg/scf"
 )
 
+var (
+	Versionm = "unknown"
+	Commitm  = "unknown"
+	Datem    = "unknown"
+	Branchm  = "unknown"
+)
+
+func showVersionm() {
+	fmt.Printf("Current Version: %s\n", Versionm)
+	fmt.Printf("Current branch: %s\n", Branchm)
+	fmt.Printf("Current commit: %s\n", Commitm)
+	fmt.Printf("Current date: %s\n", Datem)
+	os.Exit(0)
+}
 func main() {
+	showVersionm()
 	// log.SetOutput(os.Stdout)
 	cloudfunction.Start(server)
 }

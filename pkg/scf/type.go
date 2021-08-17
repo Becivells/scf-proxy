@@ -1,5 +1,7 @@
 package scf
 
+import "net/http"
+
 // DefineEvent 请求结构
 type DefineEvent struct {
 	URL     string `json:"url"`     // 目标的 URL, eg: http://cip.cc/
@@ -8,7 +10,9 @@ type DefineEvent struct {
 
 // RespEvent 响应结构
 type RespEvent struct {
-	Status bool   `json:"status"` // 请求是否正常
-	Error  string `json:"error"`  // 错误信息
-	Data   string `json:"data"`   // HTTP 响应原始报文, base64
+	Status    bool        `json:"status"` // 请求是否正常
+	Error     string      `json:"error"`  // 错误信息
+	RspData   string      `json:"data"`   // HTTP 响应原始报文, base64
+	RspHeader http.Header `json:"header"`
+	RspStatus int         `json:"rep_status"`
 }

@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"strings"
 )
 
 var (
@@ -17,7 +19,7 @@ var (
 func HandlerHttp(w http.ResponseWriter, r *http.Request) {
 	dumpReq, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		log.Println(err)
+		log.Println("hander dump error ", err)
 		w.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
@@ -28,14 +30,14 @@ func HandlerHttp(w http.ResponseWriter, r *http.Request) {
 	}
 	bytejson, err := json.Marshal(event)
 	if err != nil {
-		log.Println(err)
+		log.Println("handler event json marshal error: ", err)
 		w.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
 
 	req, err := http.NewRequest("POST", ScfApiProxyUrl, bytes.NewReader(bytejson))
 	if err != nil {
-		log.Println(err)
+		log.Println("scf send server error ", err)
 		w.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
@@ -49,21 +51,29 @@ func HandlerHttp(w http.ResponseWriter, r *http.Request) {
 
 	var respevent RespEvent
 	if err := json.Unmarshal(bytersp, &respevent); err != nil {
-		log.Println(err)
+		log.Println("respevent unmarshal error: ", err)
 		w.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
 	if resp.StatusCode > 0 && resp.StatusCode != 200 {
-		log.Println(err)
+		log.Printf(" status error:%d", resp.StatusCode)
 		w.WriteHeader(http.StatusServiceUnavailable)
+		fmt.Println("rsdata:", respevent.RspData)
 		return
 	}
-	retByte, err := base64.StdEncoding.DecodeString(respevent.Data)
+
+	retByte, err := base64.StdEncoding.DecodeString(respevent.RspData)
 	if err != nil {
-		log.Println(err)
+		log.Println("base64 decode: ", err)
 		w.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
+	headers := respevent.RspHeader
+	for hkey, hvalue := range headers {
+		w.Header().Set(hkey, strings.Join(hvalue, ";"))
+	}
+	w.WriteHeader(respevent.RspStatus)
+
 	resp.Body.Close()
 
 	w.Write(retByte)

@@ -72,7 +72,9 @@ func forworld(reqevent *DefineEvent) (*RespEvent, error) {
 	defer resp.Body.Close()
 
 	byteresp, _ := ioutil.ReadAll(resp.Body)
-	respvent.Data = base64.StdEncoding.EncodeToString(byteresp)
+	respvent.RspData = base64.StdEncoding.EncodeToString(byteresp)
+	respvent.RspHeader = resp.Header
+	respvent.RspStatus = resp.StatusCode
 	respvent.Status = true
 
 	return respvent, nil

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"os"
 	"scf-proxy/pkg/mitm"
 	"scf-proxy/pkg/scf"
 	"sync"
@@ -21,14 +22,35 @@ const (
 var (
 	exampleWg  sync.WaitGroup
 	clientPort string
+	version    bool
+	Version    = "unknown"
+	Commit     = "unknown"
+	Date       = "unknown"
+	Branch     = "unknown"
 )
+
+func showVersion() {
+	fmt.Printf("Current Version: %s\n", Version)
+	fmt.Printf("Current branch: %s\n", Branch)
+	fmt.Printf("Current commit: %s\n", Commit)
+	fmt.Printf("Current date: %s\n", Date)
+	os.Exit(0)
+}
 
 func init() {
 	flag.StringVar(&clientPort, "p", "8080", "scf-proxy 客户端端口")
 	flag.StringVar(&scf.ScfApiProxyUrl, "scfurl", "", "scf-proxy 服务端地址")
+	flag.BoolVar(&version, "v", false, "show version")
 	flag.Parse()
+	if version {
+		showVersion()
+	}
 	if scf.ScfApiProxyUrl == "" {
-		panic("scf-proxy 服务端地址为空")
+		if os.Getenv("SCF_URL") != "" {
+			scf.ScfApiProxyUrl = os.Getenv("SCF_URL")
+		} else {
+			panic("scf-proxy 服务端地址为空")
+		}
 	}
 	fmt.Println(scf.ScfApiProxyUrl)
 
